@@ -1,0 +1,42 @@
+#!/bin/bash
+
+VM_PATH=/opt/securitylab/VMS/QEMU/VM-Raizo.raw
+
+LOG_PATH=./.log
+
+TEMPLATE_PATH=./qemu-template
+
+CLONES_PATH=./clones
+
+VM_NAME=$(basename ${VM_PATH})
+
+UUID=$(cat /proc/sys/kernel/random/uuid)
+
+CLONE_NAME="${VM_NAME%%.*}-${UUID}.qcow2"
+
+CLONE_PATH="${CLONES_PATH}/${CLONE_NAME}"
+
+INSTANCE_NAME="${VM_NAME%%.*}-$(hexdump -n 4 -v -e '/1 "%02X"' -e '/4 "\n"' /dev/urandom)"
+
+CID=$(awk -v min=5000 -v max=5999 'BEGIN{srand(); print int(min+rand()*(max-min+1))}')
+
+SERIAL_PORT=$(( $CID + 1))
+TCP_PORT=$(( $CID + 2))
+
+# Create a linked clone in the current folder
+if [ ! -e "${CLONE_PATH}" ] ; then
+	qemu-img create -f qcow2 -b $VM_PATH ${CLONE_PATH}
+fi
+
+
+sed -e "s|{{INSTANCE_NAME}}|${INSTANCE_NAME}|g" cmd_template > "${LOG_PATH}/cmdline_${INSTANCE_NAME}"
+sed  -i "s|{{CLONE_PATH}}|${CLONE_PATH}|g" "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+sed  -i "s|{{UUID}}|${UUID}|g" "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+sed  -i "s|{{CID}}|${CID}|g" "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+sed  -i "s|{{SERIAL_PORT}}|${SERIAL_PORT}|g" "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+sed  -i "s|{{TCP_PORT}}|${TCP_PORT}|g" "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+
+cat  "${LOG_PATH}/cmdline_${INSTANCE_NAME}" 
+$(cat "${LOG_PATH}/cmdline_${INSTANCE_NAME}" | sed -e 's/\\//g' | tr "\n$" "\ ")  & 
+sleep 3
+telnet 127.0.0.1 ${SERIAL_PORT}

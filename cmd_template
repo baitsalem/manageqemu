@@ -1,0 +1,18 @@
+/usr/bin/qemu-system-x86_64 \
+-name {{INSTANCE_NAME}} \
+-m 200M \
+-smp cpus=1,sockets=1 \
+-enable-kvm \
+-machine smm=off \
+-boot order=c \
+-device ahci,id=ahci0 \
+-drive file={{CLONE_PATH}},if=none,id=drive0,index=0,media=disk \
+-device ide-drive,drive=drive0,bus=ahci0.0,id=drive0 \
+-uuid {{UUID}} \
+-serial telnet:127.0.0.1:{{SERIAL_PORT}},server,nowait \
+-monitor tcp:127.0.0.1:{{TCP_PORT}},server,nowait \
+-net none \
+-nographic \
+-fsdev local,id=fsdev0,path=/home/debian,security_model=none \
+-device virtio-9p-pci,fsdev=fsdev0,mount_tag=hosthome \
+-device vhost-vsock-pci,id=vwifi0,guest-cid={{CID}} 

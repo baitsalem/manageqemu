@@ -1,0 +1,69 @@
+/usr/bin/qemu-system-x86_64 
+-name DebianLinux-2 
+-m 200M 
+-smp cpus=1,sockets=1 
+-enable-kvm
+ -machine smm=off 
+-boot order=c 
+-device ahci,id=ahci0 
+-drive file=/home/debian/projects/37f2b8f8-e0aa-4fcd-83ee-f402758426aa/project-files/qemu/dff080e5-acd5-4bd4-b29a-88d4ba90eb0a/hda_disk.qcow2,if=none,id=drive0,index=0,media=disk
+-device ide-drive,drive=drive0,bus=ahci0.0,id=drive0 
+-uuid dff080e5-acd5-4bd4-b29a-88d4ba90eb0a 
+-serial telnet:127.0.0.1:5003,server,nowait
+-monitor tcp:127.0.0.1:40869,server,nowait 
+-net none 
+-device e1000,mac=0c:26:aa:eb:0a:00,netdev=gns3-0 
+-netdev socket,id=gns3-0,udp=127.0.0.1:10001,localaddr=127.0.0.1:10000 
+-device e1000,mac=0c:26:aa:eb:0a:01,netdev=gns3-1 
+-netdev socket,id=gns3-1,udp=127.0.0.1:10003,localaddr=127.0.0.1:10002 
+-device e1000,mac=0c:26:aa:eb:0a:02,netdev=gns3-2 -netdev socket,id=gns3-2,udp=127.0.0.1:10005,localaddr=127.0.0.1:10004
+ -device e1000,mac=0c:26:aa:eb:0a:03,netdev=gns3-3 
+-netdev socket,id=gns3-3,udp=127.0.0.1:10007,localaddr=127.0.0.1:10006 
+-device e1000,mac=0c:26:aa:eb:0a:04,netdev=gns3-4 
+-netdev socket,id=gns3-4,udp=127.0.0.1:10009,localaddr=127.0.0.1:10008 
+-device e1000,mac=0c:26:aa:eb:0a:05,netdev=gns3-5 
+-netdev socket,id=gns3-5,udp=127.0.0.1:10011,localaddr=127.0.0.1:10010 
+-nographic 
+-fsdev local,id=fsdev0,path=/home/debian,security_model=none 
+-device virtio-9p-pci,fsdev=fsdev0,mount_tag=hosthome 
+-smbios type=1,manufacturer=DebianLinux-2 
+-smbios type=2,manufacturer=/home/debian/projects/37f2b8f8-e0aa-4fcd-83ee-f402758426aa 
+-device vhost-vsock-pci,id=vwifi0,guest-cid=5002
+
+/usr/bin/qemu-system-x86_64 
+-name DebianLinux-1 
+-m 200M -smp cpus=1,sockets=1 
+-enable-kvm 
+-machine smm=off -boot order=c 
+-device ahci,id=ahci0 
+-drive file=/home/debian/projects/37f2b8f8-e0aa-4fcd-83ee-f402758426aa/project-files/qemu/da18ea20-61ff-459e-a57b-487d3307dfa1/hda_disk.qcow2,if=none,id=drive0,index=0,media=disk 
+-device ide-drive,drive=drive0,bus=ahci0.0,id=drive0 
+-uuid da18ea20-61ff-459e-a57b-487d3307dfa1 
+-serial telnet:127.0.0.1:5001,server,nowait 
+-monitor tcp:127.0.0.1:43519,server,nowait 
+-net none
+-device e1000,mac=0c:26:aa:df:a1:00,netdev=gns3-0 
+-netdev socket,id=gns3-0,udp=127.0.0.1:10013,localaddr=127.0.0.1:10012 
+-device e1000,mac=0c:26:aa:df:a1:01,netdev=gns3-1 
+-netdev socket,id=gns3-1,udp=127.0.0.1:10015,localaddr=127.0.0.1:10014
+-device e1000,mac=0c:26:aa:df:a1:02,netdev=gns3-2
+-netdev socket,id=gns3-2,udp=127.0.0.1:10017,localaddr=127.0.0.1:10016 
+-device e1000,mac=0c:26:aa:df:a1:03,netdev=gns3-3
+-netdev socket,id=gns3-3,udp=127.0.0.1:10019,localaddr=127.0.0.1:10018 
+-device e1000,mac=0c:26:aa:df:a1:04,netdev=gns3-4
+ -netdev socket,id=gns3-4,udp=127.0.0.1:10021,localaddr=127.0.0.1:10020 
+-device e1000,mac=0c:26:aa:df:a1:05,netdev=gns3-5 
+-netdev socket,id=gns3-5,udp=127.0.0.1:10023,localaddr=127.0.0.1:10022 
+-nographic -fsdev local,id=fsdev0,path=/home/debian,security_model=none 
+-device virtio-9p-pci,fsdev=fsdev0,mount_tag=hosthome -smbios type=1,manufacturer=DebianLinux-1 
+-smbios type=2,manufacturer=/home/debian/projects/37f2b8f8-e0aa-4fcd-83ee-f402758426aa 
+-device vhost-vsock-pci,id=vwifi0,guest-cid=5000
+
+
+
+
+
+
+
+
+
